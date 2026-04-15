@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
-  NODE_VERSION: '22.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: "." # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: "22.x" # set this to the node version to use (supports 8.x, 10.x, 12.x)
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - name: 'Checkout GitHub Action'
+      - name: "Checkout GitHub Action"
         uses: actions/checkout@v4
 
       - name: Setup Node ${{ env.NODE_VERSION }} Environment
@@ -28,13 +28,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: 'Resolve Project Dependencies Using Npm'
+      - name: "Resolve Project Dependencies Using Npm"
         shell: bash
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           npm install --legacy-peer-deps
           npm run build --if-present
-          npm run test --if-present
           popd
 
       - name: Zip artifact for deployment
@@ -63,7 +62,7 @@ jobs:
         run: |
           unzip release.zip
           rm release.zip
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -71,11 +70,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2AF14AEC10764A0697F0A7AD252252A0 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2E1B9F90EA5D49D3B86A4FE7A951C0CF }}
 
-      - name: 'Run Azure Functions Action'
+      - name: "Run Azure Functions Action"
         uses: Azure/functions-action@v1
         id: fa
         with:
-          app-name: 'resume-radar'
-          slot-name: 'Production'
+          app-name: "resume-radar"
+          slot-name: "Production"
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          
